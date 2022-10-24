@@ -1,8 +1,6 @@
 {
 	"name": "okash1n Codespaces Image",
-	"build": {
-		"dockerfile": "Dockerfile"
-	},
+	"image": "ghcr.io/okash1n/devcontainers/default:latest",
 	"customizations": {
 		"vscode": {
 			"extensions": [

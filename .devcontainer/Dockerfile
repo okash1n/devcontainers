@@ -1,1 +1,0 @@
-FROM ghcr.io/okash1n/devcontainers/default:latest
