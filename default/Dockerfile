@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/oryx/build:vso-focal-20220429.1 as kitchensink
+FROM mcr.microsoft.com/oryx/build:vso-focal
 
 ARG USERNAME=codespace
 ARG USER_UID=1000
@@ -49,7 +49,7 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get install -yq vim vim-doc xtail software-properties-common libsecret-1-dev \
     # Install additional tools (useful for 'puppeteer' project)
     && apt-get install -y --no-install-recommends libnss3 libnspr4 libatk-bridge2.0-0 libatk1.0-0 libx11-6 libpangocairo-1.0-0 \
-                                                  libx11-xcb1 libcups2 libxcomposite1 libxdamage1 libxfixes3 libpango-1.0-0 libgbm1 libgtk-3-0 \
+    libx11-xcb1 libcups2 libxcomposite1 libxdamage1 libxfixes3 libpango-1.0-0 libgbm1 libgtk-3-0 \
     && bash /tmp/scripts/sshd-debian.sh \
     && bash /tmp/scripts/git-lfs-debian.sh \
     && bash /tmp/scripts/github-debian.sh \
@@ -58,6 +58,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && bash /tmp/scripts/kubectl-helm-debian.sh \
     # Build latest git from source
     && bash /tmp/scripts/git-from-src-debian.sh "latest" \
+    # Install additional cli tools
+    && apt-get -yq install neofetch time fzf fd-find \
     # Clean up
     && apt-get autoremove -y && apt-get clean -y \
     # Move first run notice to right spot
@@ -107,8 +109,8 @@ RUN git config --global --add safe.directory "${NVM_DIR}" \
 # Install SDKMAN, OpenJDK8 (JDK 17 already present), gradle (maven already present)
 RUN bash /tmp/scripts/gradle-debian.sh "latest" "${SDKMAN_DIR}" "${USERNAME}" "true" \
     && su ${USERNAME} -c ". ${SDKMAN_DIR}/bin/sdkman-init.sh \
-        && sdk install java 11-opt-java /opt/java/17.0 \
-        && sdk install java lts-opt-java /opt/java/lts"
+    && sdk install java 11-opt-java /opt/java/17.0 \
+    && sdk install java lts-opt-java /opt/java/lts"
 
 # Install Go, remove scripts now that we're done with them
 RUN bash /tmp/scripts/go-debian.sh "latest" "${GOROOT}" "${GOPATH}" "${USERNAME}" \
@@ -124,9 +126,9 @@ CMD [ "sleep", "infinity" ]
 # [Optional] Install debugger for development of Codespaces - Not in resulting image by default
 ARG DeveloperBuild
 RUN if [ -z $DeveloperBuild ]; then \
-        echo "not including debugger" ; \
+    echo "not including debugger" ; \
     else \
-        curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg ; \
+    curl -sSL https://aka.ms/getvsdbgsh | bash /dev/stdin -v latest -l /vsdbg ; \
     fi
 
 USER ${USERNAME}
