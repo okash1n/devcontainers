@@ -1,53 +1,54 @@
 {
+	"name": "okash1n Codespaces Image",
 	"build": {
 		"dockerfile": "Dockerfile"
 	},
-	"runArgs": [
-		"--shm-size=1g"
-	],
 	// Configure tool-specific properties.
 	"customizations": {
 		// Configure properties specific to VS Code.
 		"vscode": {
 			// Set *default* container specific settings.json values on container create.
-			"settings": { 
-				"resmon.show.battery": false,
-				"resmon.show.cpufreq": false
+			"settings": {
+				"go.toolsManagement.checkForUpdates": "local",
+				"go.useLanguageServer": true,
+				"go.gopath": "/go",
+				"python.defaultInterpreterPath": "/opt/python/latest/bin/python",
+				"python.linting.enabled": true,
+				"python.linting.pylintEnabled": true,
+				"python.formatting.autopep8Path": "/usr/local/py-utils/bin/autopep8",
+				"python.formatting.blackPath": "/usr/local/py-utils/bin/black",
+				"python.formatting.yapfPath": "/usr/local/py-utils/bin/yapf",
+				"python.linting.banditPath": "/usr/local/py-utils/bin/bandit",
+				"python.linting.flake8Path": "/usr/local/py-utils/bin/flake8",
+				"python.linting.mypyPath": "/usr/local/py-utils/bin/mypy",
+				"python.linting.pycodestylePath": "/usr/local/py-utils/bin/pycodestyle",
+				"python.linting.pydocstylePath": "/usr/local/py-utils/bin/pydocstyle",
+				"python.linting.pylintPath": "/usr/local/py-utils/bin/pylint",
+				"lldb.executable": "/usr/bin/lldb",
+				"files.watcherExclude": {
+					"**/target/**": true
+				}
 			},
-			
 			// Add the IDs of extensions you want installed when the container is created.
 			"extensions": [
-				"ms-azuretools.vscode-docker",
-				"dbaeumer.vscode-eslint",
-				"rogalmic.bash-debug",
-				"mads-hartmann.bash-ide-vscode",
-				"streetsidesoftware.code-spell-checker",
-				"mutantdino.resourcemonitor",
-				"bierner.github-markdown-preview",
-				"EditorConfig.EditorConfig",
-				"chrisdias.vscode-opennewinstance"
+				"GitHub.vscode-pull-request-github"
 			]
 		}
 	},
-	"forwardPorts": [6080],
-	"portsAttributes": {
-		"6080": {
-			"label": "Desktop access (password: vscode)",
-			"onAutoForward": "silent"
-		},
-		"5901": {
-			"label": "VNC TCP port (password: vscode)",
-			"onAutoForward": "silent"
-		}
-	},
-	"postCreateCommand": "bash .devcontainer/postCreateCommand.sh",
-	"remoteUser": "node",
-	"features": {
-		"docker-in-docker": "latest",
-		"github-cli": "latest"
-	},
+	"remoteUser": "codespace",
 	"overrideCommand": false,
-	"hostRequirements": {
-		"memory": "6gb"
-	}
+	"mounts": [
+		"source=codespaces-linux-var-lib-docker,target=/var/lib/docker,type=volume"
+	],
+	"runArgs": [
+		"--cap-add=SYS_PTRACE",
+		"--security-opt",
+		"seccomp=unconfined",
+		"--privileged",
+		"--init"
+	],
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+	// "oryx build" will automatically install your dependencies and attempt to build your project
+	"postCreateCommand": "oryx build -p virtualenv_name=.venv --log-file /tmp/oryx-build.log --manifest-dir /tmp || echo 'Could not auto-build. Skipping.'"
 }
