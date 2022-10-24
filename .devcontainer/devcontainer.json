@@ -1,0 +1,13 @@
+{
+	"name": "okash1n Codespaces Image",
+	"build": {
+		"dockerfile": "Dockerfile"
+	},
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"mhutchie.git-graph"
+			]
+		}
+	}
+}
