@@ -6,6 +6,8 @@ RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
     && apt-get -yq install neofetch time fzf fd-find \
     # Clean up
     && apt-get autoremove -y && apt-get clean -y
-USER codespace
+    && npm audit fix --force
+    && npm install -g npm
+    && npm install -g gatsby-cli
 
-RUN yarn global add gatsby-cli
+USER codespace
